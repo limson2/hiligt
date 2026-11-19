@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>희망 도서 / 교구 신청서</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6f9;color:#26364e;font-family:'Malgun Gothic',Arial,sans-serif;font-size:12px}.app{width:min(100% - 24px,420px);margin:18px auto 30px;background:white;border-radius:11px;box-shadow:0 6px 22px #1c355018;overflow:hidden}.top{background:linear-gradient(110deg,#203d8f,#397cf0);color:#fff;text-align:center;font-size:15px;font-weight:800;padding:15px 8px}.inner{padding:15px 16px 18px}.notice{background:#edf5ff;border:1px solid #b6d2ff;border-radius:6px;padding:11px 10px;margin-bottom:17px}.notice strong{color:#193b82;font-size:11px}.notice ul{margin:5px 0 0;padding-left:13px;color:#244c9a;font-size:10px;line-height:1.6}.notice b{color:#ed3535}.field{margin-bottom:13px}label,.label{display:block;font-size:11px;font-weight:700;margin-bottom:6px}input,textarea{display:block;width:100%;border:1px solid #c3d0e2;border-radius:4px;padding:9px 10px;color:#25344b;font:12px 'Malgun Gothic',Arial,sans-serif;outline:none;background:white}input:focus,textarea:focus{border-color:#3a7bf1;box-shadow:0 0 0 2px #3a7bf122}input::placeholder,textarea::placeholder{color:#8793a5;font-size:11px}.hint{font-size:10px;color:#68788d;margin-top:5px}.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}.book{background:#f7f9fc;border:1px solid #c5d2e3;border-radius:6px;padding:11px 12px 8px;margin-bottom:11px}.bookhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.bookhead strong{font-size:11px;color:#244d9e}.bookhead strong:before{content:'📚 ';font-size:12px}.book .field{margin-bottom:11px}.remove{border:1px solid #c4d0df;background:white;color:#53647c;border-radius:3px;padding:4px 7px;font-size:10px;cursor:pointer}.pricewrap{display:flex}.pricewrap input{border-radius:4px 0 0 4px}.won{display:grid;place-items:center;width:34px;flex:none;border:1px solid #c3d0e2;border-left:0;background:#f0f3f8;border-radius:0 4px 4px 0;font-size:11px}.actions{display:flex;gap:8px;margin:3px 0 14px}.add{border:1px solid #b6c9e6;border-radius:4px;background:#f2f7ff;color:#2458a9;font-weight:700;font-size:11px;padding:8px 11px;cursor:pointer}.submit{display:block;width:100%;border:0;border-radius:5px;background:linear-gradient(90deg,#24428f,#387cf0);color:white;padding:12px;font-size:12px;font-weight:800;cursor:pointer}.submit:disabled{opacity:.6;cursor:wait}textarea{min-height:62px;resize:vertical}.message{display:none;margin:0 0 12px;padding:10px;border-radius:5px;line-height:1.6}.message.show{display:block}.message.error{background:#fff0f0;color:#aa2020}.message.success{background:#eaf7ef;color:#146b39}@media(max-width:370px){.inner{padding:13px}.cols{gap:8px}.app{width:calc(100% - 16px);margin:10px auto}}
+</style></head><body><main class="app"><header class="top">📚 희망 도서 / 교구 신청서</header><div class="inner"><section class="notice"><strong>⚠️ 신청 전 확인 사항</strong><ul><li><b>[가]</b> 희망 도서 검색 및 링크 확인은 <a href="https://www.yes24.com/" target="_blank" rel="noopener">YES24(yes24.com)</a>, 학습 교구 검색 및 링크 확인은 <a href="https://i-screammall.co.kr" target="_blank" rel="noopener">아이스크림몰(i-screammall.co.kr)</a> 사이트를 이용해 주세요.</li><li><b>[나]</b> 희망 도서는 <b>1인당 최대 44,000원 이내로</b> 신청할 수 있습니다.</li><li><b>[다]</b> 할인 적용이 되는 도서, 교구인 경우 <b>할인 후 정가</b>를 입력해 주세요.</li></ul></section><form id="requestForm" novalidate><div class="field"><label for="name">신청자 성명</label><input id="name" name="name" required placeholder="성명을 입력하세요"></div><div class="field"><label for="phone">전화번호</label><input id="phone" name="phone" type="tel" inputmode="tel" required placeholder="예: 010-1234-5678"><div class="hint">도서 배송 및 연락을 위해 사용됩니다.</div></div><div class="cols"><div class="field"><label for="position">지역</label><input id="position" name="region" required placeholder="예: 시흥, 광명, 부천"></div><div class="field"><label for="affiliation">소속교</label><input id="affiliation" name="school" required placeholder="학교명을 입력하세요"></div></div><div class="field"><label for="address">배송받을 주소</label><input id="address" name="address" required placeholder="우편번호를 포함한 정확한 배송지 주소를 입력하세요"></div><div id="books"></div><div class="actions"><button type="button" id="addBook" class="add">+ 희망 도서 / 학습교구 추가</button></div><div class="field"><label for="reason">신청 사유 / 비고</label><textarea id="reason" name="reason" required placeholder="도서를 추천하거나 구입해야 하는 이유를 간단히 적어주세요"></textarea></div><p id="message" class="message" role="status"></p><button class="submit" type="submit">구입 신청하기</button></form></div></main><script>
+// Apps Script HTML 서비스에서 google.script.run으로 서버 함수를 호출합니다.
+const MAX_BOOKS = 3;
+const MAX_TOTAL_PRICE = 44000;
+const booksEl=document.getElementById('books'), addBtn=document.getElementById('addBook'), msg=document.getElementById('message');
+function bookCard(index){const card=document.createElement('section');card.className='book';card.innerHTML=`<div class="bookhead"><strong>희망 도서 <span class="num"></span> / 학습교구 <span class="num2"></span></strong><button class="remove" type="button">삭제</button></div><div class="field"><label>도서명, 교구 이름(정확하게 입력)</label><input class="book-title" required placeholder="도서명 또는 교구 이름을 입력하세요"></div><div class="field"><label>YES24 도서 / 아이스크림몰 교구 링크</label><input class="book-url" type="url" required placeholder="YES24 도서 또는 아이스크림몰 교구 페이지 주소를 입력하세요"></div><div class="field"><label>도서/교구 가격 (할인 적용 후 금액)</label><div class="pricewrap"><input class="book-price" type="number" min="1" step="1" inputmode="numeric" required placeholder="예: 18000"><span class="won">원</span></div><div class="hint">할인 적용 후 가격을 적어 주세요.</div></div>`;card.querySelector('.remove').addEventListener('click',()=>{card.remove();renumber()});return card}
+function renumber(){[...booksEl.children].forEach((card,i)=>{card.querySelector('.num').textContent=i+1;card.querySelector('.num2').textContent=i+1;card.querySelector('.remove').hidden=i===0&&booksEl.children.length===1});addBtn.hidden=booksEl.children.length>=MAX_BOOKS}
+function addBook(){if(booksEl.children.length>=MAX_BOOKS)return;booksEl.appendChild(bookCard(booksEl.children.length));renumber()}
+addBtn.addEventListener('click',addBook);addBook();
+function show(text,type){msg.textContent=text;msg.className='message show '+type;msg.scrollIntoView({behavior:'smooth',block:'nearest'})}
+document.getElementById('requestForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const form=e.currentTarget;
+  msg.className='message';
+  if(!form.checkValidity()){form.reportValidity();show('필수 입력 항목을 확인해 주세요.','error');return}
+  const phone=form.elements.phone.value.trim();
+  if(!/^[0-9+().\-\s]{8,22}$/.test(phone)){show('전화번호 형식을 확인해 주세요.','error');return}
+  const books=[...booksEl.children].map(card=>({
+    title:card.querySelector('.book-title').value.trim(),
+    url:card.querySelector('.book-url').value.trim(),
+    price:Number(card.querySelector('.book-price').value)
+  }));
+  if(books.some(b=>!/^https?:\/\//i.test(b.url))){show('도서 또는 교구 링크를 올바르게 입력해 주세요.','error');return}
+  if(books.reduce((sum,b)=>sum+b.price,0)>MAX_TOTAL_PRICE){show('신청 금액은 총 44,000원을 초과할 수 없습니다.','error');return}
+  const payload={name:form.elements.name.value.trim(),phone,
+    region:form.elements.region.value.trim(),school:form.elements.school.value.trim(),
+    address:form.elements.address.value.trim(),reason:form.elements.reason.value.trim()};
+  books.forEach((book,i)=>{
+    const suffix=i===0?'':String(i+1);
+    payload['bookTitle'+suffix]=book.title;
+    payload['bookUrl'+suffix]=book.url;
+    payload['price'+suffix]=String(book.price);
+  });
+  if(!(window.google&&google.script&&google.script.run)){
+    show('이 파일은 Google Apps Script 웹앱으로 배포한 주소에서 신청할 수 있습니다.','error');return;
+  }
+  const button=form.querySelector('.submit');button.disabled=true;
+  google.script.run.withSuccessHandler(result=>{
+    button.disabled=false;
+    if(typeof result==='string'&&result.startsWith('SUCCESS:')){
+      show(result.replace(/^SUCCESS:\s*/,''),'success');form.reset();booksEl.replaceChildren();addBook();
+    }else{show(String(result||'저장 결과를 확인할 수 없습니다.').replace(/^ERROR:\s*/,''),'error')}
+  }).withFailureHandler(err=>{
+    button.disabled=false;show('저장에 실패했습니다. '+(err.message||String(err)),'error');
+  }).processForm(payload);
+});
+</script></body></html>
