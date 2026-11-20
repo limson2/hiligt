@@ -1,92 +1,348 @@
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdHbWz4axc8QYvFbfljITDPxHe96Y4mKTpqtk7ZVHw0D6AN9MqskQk-5Hr2VwkBrkNDg/exec';
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>희망 도서 / 교구 신청서</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #f4f6f9;
+  color: #26364e;
+  font-family: "Malgun Gothic", Arial, sans-serif;
+  font-size: 12px;
+}
+.app {
+  max-width: 420px;
+  margin: 18px auto;
+  background: white;
+  border-radius: 11px;
+  box-shadow: 0 6px 22px #1c355018;
+  overflow: hidden;
+}
+.top {
+  background: linear-gradient(110deg,#203d8f,#397cf0);
+  color: white;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 15px;
+}
+.inner { padding: 16px; }
+.notice {
+  background: #edf5ff;
+  border: 1px solid #b6d2ff;
+  border-radius: 6px;
+  padding: 11px;
+  margin-bottom: 17px;
+}
+.notice strong { color: #193b82; }
+.notice ul {
+  padding-left: 15px;
+  color: #244c9a;
+  font-size: 10px;
+  line-height: 1.7;
+}
+.notice b { color: #ed3535; }
+.field { margin-bottom: 13px; }
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+input, textarea {
+  width: 100%;
+  border: 1px solid #c3d0e2;
+  border-radius: 4px;
+  padding: 9px 10px;
+  font: 12px "Malgun Gothic", sans-serif;
+  background: white;
+}
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #397cf0;
+}
+input::placeholder, textarea::placeholder {
+  color: #8793a5;
+  font-size: 11px;
+}
+.hint {
+  font-size: 10px;
+  color: #68788d;
+  margin-top: 5px;
+}
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.book {
+  background: #f7f9fc;
+  border: 1px solid #c5d2e3;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 11px;
+}
+.bookhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.bookhead strong {
+  font-size: 11px;
+  color: #244d9e;
+}
+.book .field { margin-bottom: 11px; }
+.remove {
+  border: 1px solid #c4d0df;
+  background: white;
+  border-radius: 3px;
+  padding: 5px 8px;
+  font-size: 10px;
+  cursor: pointer;
+}
+.pricewrap { display: flex; }
+.pricewrap input {
+  border-radius: 4px 0 0 4px;
+}
+.won {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  flex-shrink: 0;
+  border: 1px solid #c3d0e2;
+  border-left: 0;
+  background: #f0f3f8;
+}
+.add {
+  border: 1px solid #b6c9e6;
+  border-radius: 4px;
+  background: #f2f7ff;
+  color: #2458a9;
+  font-weight: bold;
+  padding: 9px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+.submit {
+  width: 100%;
+  border: 0;
+  border-radius: 5px;
+  background: linear-gradient(90deg,#24428f,#387cf0);
+  color: white;
+  padding: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.submit:disabled { opacity: .6; }
+textarea { min-height: 65px; }
+.message {
+  display: none;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 5px;
+  line-height: 1.6;
+}
+.message.show { display: block; }
+.message.error {
+  background: #fff0f0;
+  color: #aa2020;
+}
+.message.success {
+  background: #eaf7ef;
+  color: #146b39;
+}
+@media(max-width:450px) {
+  .app { margin: 10px 8px; }
+}
+</style>
+</head>
+
+<body>
+<main class="app">
+<header class="top">
+📚 희망 도서 / 교구 신청서
+</header>
+
+<div class="inner">
+<section class="notice">
+<strong>⚠️ 신청 전 확인 사항</strong>
+<ul>
+<li>
+[가] 희망 도서 검색 및 링크 확인은
+<a href="https://www.yes24.com/" target="_blank">YES24</a>,
+학습 교구 검색 및 링크 확인은
+<a href="https://i-screammall.co.kr" target="_blank">아이스크림몰</a>
+사이트를 이용해 주세요.
+</li>
+<li>
+[나] 1인당 최대 <b>44,000원 이내</b>로 신청할 수 있습니다.
+</li>
+<li>
+[다] 할인 적용이 되는 도서, 교구인 경우
+<b>할인 후 가격</b>을 입력해 주세요.
+</li>
+</ul>
+</section>
+
+<form id="requestForm">
+
+<div class="field">
+<label>신청자 성명</label>
+<input name="name" required placeholder="성명을 입력하세요">
+</div>
+
+<div class="field">
+<label>전화번호</label>
+<input name="phone" type="tel" required
+placeholder="예: 010-1234-5678">
+<div class="hint">도서 배송 및 연락을 위해 사용됩니다.</div>
+</div>
+
+<div class="cols">
+<div class="field">
+<label>지역</label>
+<input name="region" required
+placeholder="예: 시흥, 광명, 부천">
+</div>
+<div class="field">
+<label>소속교</label>
+<input name="school" required
+placeholder="학교명을 입력하세요">
+</div>
+</div>
+
+<div class="field">
+<label>배송받을 주소</label>
+<input name="address" required
+placeholder="우편번호를 포함한 정확한 주소를 입력하세요">
+</div>
+
+<div id="books"></div>
+
+<button type="button" id="addBook" class="add">
++ 희망 도서 / 학습교구 추가
+</button>
+
+<div class="field">
+<label>신청 사유 / 비고</label>
+<textarea name="reason" required
+placeholder="신청 사유를 간단히 적어주세요"></textarea>
+</div>
+
+<div id="message" class="message" role="status"></div>
+
+<button type="submit" class="submit">
+구입 신청하기
+</button>
+
+</form>
+</div>
+</main>
+
+<script>
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxdHbWz4axc8QYvFbfljITDPxHe96Y4mKTpqtk7ZVHw0D6AN9MqskQk-5Hr2VwkBrkNDg/exec";
+
 const MAX_BOOKS = 3;
-const MAX_TOTAL_PRICE = 44000;
+const MAX_PRICE = 44000;
 
-const booksEl = document.getElementById('books');
-const addBtn = document.getElementById('addBook');
-const msg = document.getElementById('message');
+const booksEl = document.getElementById("books");
+const addBtn = document.getElementById("addBook");
+const msg = document.getElementById("message");
 
-function bookCard() {
-  const card = document.createElement('section');
-  card.className = 'book';
+function addBook() {
+  if (booksEl.children.length >= MAX_BOOKS) return;
+
+  const card = document.createElement("section");
+  card.className = "book";
 
   card.innerHTML = `
     <div class="bookhead">
-      <strong>희망 도서 <span class="num"></span> / 학습교구 <span class="num2"></span></strong>
-      <button class="remove" type="button">삭제</button>
+      <strong class="book-name"></strong>
+      <button type="button" class="remove">삭제</button>
     </div>
+
     <div class="field">
       <label>도서명, 교구 이름(정확하게 입력)</label>
-      <input class="book-title" required placeholder="도서명 또는 교구 이름을 입력하세요">
+      <input class="book-title" required
+      placeholder="도서명 또는 교구 이름을 입력하세요">
     </div>
+
     <div class="field">
       <label>YES24 도서 / 아이스크림몰 교구 링크</label>
-      <input class="book-url" type="url" required placeholder="도서 또는 교구 페이지 주소를 입력하세요">
+      <input class="book-url" type="url" required
+      placeholder="도서 또는 교구 페이지 주소를 입력하세요">
     </div>
+
     <div class="field">
       <label>도서/교구 가격 (할인 적용 후 금액)</label>
       <div class="pricewrap">
-        <input class="book-price" type="number" min="1" step="1" required placeholder="예: 18000">
+        <input class="book-price" type="number"
+        min="1" step="1" required placeholder="예: 18000">
         <span class="won">원</span>
       </div>
       <div class="hint">할인 적용 후 가격을 적어 주세요.</div>
-    </div>`;
+    </div>
+  `;
 
-  card.querySelector('.remove').addEventListener('click', () => {
+  card.querySelector(".remove").onclick = () => {
     card.remove();
     renumber();
-  });
+  };
 
-  return card;
+  booksEl.appendChild(card);
+  renumber();
 }
 
 function renumber() {
   [...booksEl.children].forEach((card, i) => {
-    card.querySelector('.num').textContent = i + 1;
-    card.querySelector('.num2').textContent = i + 1;
-    card.querySelector('.remove').hidden =
-      i === 0 && booksEl.children.length === 1;
+    card.querySelector(".book-name").textContent =
+      "📚 희망 도서 " + (i + 1) +
+      " / 학습교구 " + (i + 1);
+
+    card.querySelector(".remove").hidden =
+      booksEl.children.length === 1;
   });
+
   addBtn.hidden = booksEl.children.length >= MAX_BOOKS;
 }
 
-function addBook() {
-  if (booksEl.children.length >= MAX_BOOKS) return;
-  booksEl.appendChild(bookCard());
-  renumber();
-}
-
-addBtn.addEventListener('click', addBook);
+addBtn.onclick = addBook;
 addBook();
 
-function show(text, type) {
+function showMessage(text, type) {
   msg.textContent = text;
-  msg.className = 'message show ' + type;
-  msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  msg.className = "message show " + type;
 }
 
-document.getElementById('requestForm').addEventListener('submit', async e => {
+document.getElementById("requestForm")
+.addEventListener("submit", async function(e) {
   e.preventDefault();
-  const form = e.currentTarget;
-  msg.className = 'message';
 
-  if (!form.checkValidity()) {
-    form.reportValidity();
-    show('필수 입력 항목을 확인해 주세요.', 'error');
-    return;
-  }
+  const form = e.currentTarget;
+
+  if (!form.reportValidity()) return;
 
   const books = [...booksEl.children].map(card => ({
-    title: card.querySelector('.book-title').value.trim(),
-    url: card.querySelector('.book-url').value.trim(),
-    price: Number(card.querySelector('.book-price').value)
+    title: card.querySelector(".book-title").value.trim(),
+    url: card.querySelector(".book-url").value.trim(),
+    price: Number(card.querySelector(".book-price").value)
   }));
 
-  const total = books.reduce((sum, book) => sum + book.price, 0);
+  const total = books.reduce(
+    (sum, book) => sum + book.price, 0
+  );
 
-  if (total > MAX_TOTAL_PRICE) {
-    show('신청 총금액은 44,000원을 초과할 수 없습니다.', 'error');
+  if (total > MAX_PRICE) {
+    showMessage(
+      "신청 총금액은 44,000원을 초과할 수 없습니다.",
+      "error"
+    );
     return;
   }
 
@@ -100,32 +356,44 @@ document.getElementById('requestForm').addEventListener('submit', async e => {
   };
 
   books.forEach((book, i) => {
-    const suffix = i === 0 ? '' : String(i + 1);
-    payload['bookTitle' + suffix] = book.title;
-    payload['bookUrl' + suffix] = book.url;
-    payload['price' + suffix] = String(book.price);
+    const suffix = i === 0 ? "" : String(i + 1);
+
+    payload["bookTitle" + suffix] = book.title;
+    payload["bookUrl" + suffix] = book.url;
+    payload["price" + suffix] = String(book.price);
   });
 
-  const button = form.querySelector('.submit');
+  const button = form.querySelector(".submit");
   button.disabled = true;
-  show('신청 내용을 전송하고 있습니다...', 'success');
+
+  showMessage("신청 내용을 전송하고 있습니다...", "success");
 
   try {
     await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
       body: JSON.stringify(payload)
     });
 
-    show(
-      '전송 요청을 보냈습니다. 실제 접수 여부는 구글 스프레드시트에서 확인해 주세요.',
-      'success'
+    showMessage(
+      "전송 요청을 보냈습니다. 실제 저장 여부는 구글 스프레드시트에서 확인해 주세요.",
+      "success"
     );
+
   } catch (error) {
-    show('전송 요청에 실패했습니다. ' + error.message, 'error');
+    showMessage(
+      "전송 요청에 실패했습니다. 다시 시도해 주세요.",
+      "error"
+    );
   } finally {
     button.disabled = false;
   }
 });
+</script>
+</body>
+</html>
+
 
