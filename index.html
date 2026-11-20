@@ -235,7 +235,7 @@ textarea {
       에서 검색해 주세요.
     </li>
     <li>
-      신청 금액은 <b>총 44,000원 이하</b>입니다.
+      신청 금액은 <b>총 40,000원 이하</b>입니다.
     </li>
     <li>
       도서·교구는 최대 <b>3개</b>까지 신청할 수 있습니다.
@@ -291,7 +291,7 @@ textarea {
 <div class="total">
   신청 총금액:
   <span id="totalPrice">0원</span>
-  / 44,000원
+  / 40,000원
 </div>
 
 <div class="field">
@@ -321,7 +321,7 @@ const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbxSiE7NjpTsS3blBrlMbg8wPS4MFIo3yvovgmGmYEeVWHdfTdjZI6wLs5Qwej7kTCLxPA/exec";
 
 const MAX_ITEMS = 3;
-const MAX_TOTAL = 44000;
+const MAX_TOTAL = 40000;
 
 const itemsContainer = document.getElementById("items");
 const addButton = document.getElementById("addButton");
@@ -437,7 +437,7 @@ document.getElementById("applicationForm")
 
     if (total > MAX_TOTAL) {
       showMessage(
-        "신청 총금액은 44,000원을 초과할 수 없습니다.",
+        "신청 총금액은 40,000원을 초과할 수 없습니다.",
         "error"
       );
       return;
