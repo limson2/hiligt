@@ -2,25 +2,513 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>희망 도서 / 교구 신청서</title>
-  <meta http-equiv="refresh"
-    content="0;url=https://script.google.com/macros/s/AKfycbxdHbWz4axc8QYvFbfljITDPxHe96Y4mKTpqtk7ZVHw0D6AN9MqskQk-5Hr2VwkBrkNDg/exec">
-</head>
-<body>
-  <p>
-    신청서로 이동 중입니다.
-    <a href="https://script.google.com/macros/s/AKfycbxdHbWz4axc8QYvFbfljITDPxHe96Y4mKTpqtk7ZVHw0D6AN9MqskQk-5Hr2VwkBrkNDg/exec">
-      신청서 열기
-    </a>
-  </p>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>희망 도서 / 교구 신청서</title>
 
-  <script>
-    location.replace(
-      "https://script.google.com/macros/s/AKfycbxdHbWz4axc8QYvFbfljITDPxHe96Y4mKTpqtk7ZVHw0D6AN9MqskQk-5Hr2VwkBrkNDg/exec"
-    );
-  </script>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f3f6fb;
+  color: #26364b;
+  font-family: "Malgun Gothic", Arial, sans-serif;
+  font-size: 13px;
+}
+
+.container {
+  max-width: 580px;
+  margin: 30px auto;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 5px 25px rgba(0,0,0,.08);
+}
+
+header {
+  background: linear-gradient(120deg,#23449a,#4486ee);
+  color: white;
+  padding: 24px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.content {
+  padding: 25px;
+}
+
+.notice {
+  background: #eef5ff;
+  border: 1px solid #c4d9fa;
+  border-radius: 9px;
+  padding: 15px;
+  margin-bottom: 25px;
+  line-height: 1.8;
+}
+
+.notice strong {
+  color: #204a99;
+}
+
+.notice a {
+  color: #245ec5;
+  font-weight: bold;
+}
+
+.notice ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.notice b {
+  color: #e13b3b;
+}
+
+.field {
+  margin-bottom: 17px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 7px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 13px;
+  background: white;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #3679e7;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.item {
+  background: #f8faff;
+  border: 1px solid #d6e0ee;
+  border-radius: 10px;
+  padding: 17px;
+  margin-bottom: 15px;
+}
+
+.item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.item-title {
+  color: #2453a2;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.remove-btn {
+  background: white;
+  border: 1px solid #d0d8e5;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-btn {
+  width: 100%;
+  padding: 12px;
+  background: #eef5ff;
+  border: 1px dashed #7ca9e8;
+  color: #2459ad;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 18px;
+}
+
+.total {
+  text-align: right;
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 23px;
+}
+
+.total span {
+  color: #245ed0;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #3069d8;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.submit-btn:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+.message {
+  display: none;
+  padding: 13px;
+  border-radius: 8px;
+  margin-top: 15px;
+  line-height: 1.6;
+}
+
+.message.show {
+  display: block;
+}
+
+.message.info {
+  background: #eef5ff;
+  color: #22529b;
+}
+
+.message.error {
+  background: #fff0f0;
+  color: #b42323;
+}
+
+@media(max-width:600px) {
+  .container {
+    margin: 10px;
+  }
+  .content {
+    padding: 18px;
+  }
+  header h1 {
+    font-size: 19px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <h1>📚 희망 도서 / 교구 신청서</h1>
+</header>
+
+<div class="content">
+
+<div class="notice">
+  <strong>📌 신청 전 확인 사항</strong>
+  <ul>
+    <li>
+      도서는
+      <a href="https://www.yes24.com/"
+         target="_blank" rel="noopener noreferrer">YES24</a>,
+      학습교구는
+      <a href="https://i-screammall.co.kr/"
+         target="_blank" rel="noopener noreferrer">아이스크림몰</a>
+      에서 검색해 주세요.
+    </li>
+    <li>
+      신청 금액은 <b>총 44,000원 이하</b>입니다.
+    </li>
+    <li>
+      도서·교구는 최대 <b>3개</b>까지 신청할 수 있습니다.
+    </li>
+    <li>
+      가격은 <b>할인 적용 후 금액</b>으로 입력해 주세요.
+    </li>
+  </ul>
+</div>
+
+<form id="applicationForm">
+
+<div class="field">
+  <label for="name">신청자 이름</label>
+  <input id="name" name="name" required
+         placeholder="이름을 입력하세요">
+</div>
+
+<div class="field">
+  <label for="phone">전화번호</label>
+  <input id="phone" name="phone" type="tel" required
+         placeholder="010-1234-5678">
+</div>
+
+<div class="row">
+
+  <div class="field">
+    <label for="region">지역</label>
+    <input id="region" name="region" required
+           placeholder="예: 시흥, 광명, 부천">
+  </div>
+
+  <div class="field">
+    <label for="school">소속교</label>
+    <input id="school" name="school" required
+           placeholder="학교명 입력">
+  </div>
+
+</div>
+
+<div class="field">
+  <label for="address">배송받을 주소</label>
+  <input id="address" name="address" required
+         placeholder="정확한 배송 주소를 입력하세요">
+</div>
+
+<div id="items"></div>
+
+<button type="button" class="add-btn" id="addButton">
+  + 희망 도서 / 학습교구 추가
+</button>
+
+<div class="total">
+  신청 총금액:
+  <span id="totalPrice">0원</span>
+  / 44,000원
+</div>
+
+<div class="field">
+  <label for="reason">신청 사유</label>
+  <textarea id="reason" name="reason" required
+            placeholder="신청 사유를 입력하세요"></textarea>
+</div>
+
+<button type="submit" class="submit-btn" id="submitButton">
+  신청서 제출하기
+</button>
+
+<div id="message" class="message" role="status"></div>
+
+</form>
+
+</div>
+</div>
+
+<script>
+
+// ======================================
+// 새 Google Apps Script 웹 앱 주소
+// ======================================
+
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxSiE7NjpTsS3blBrlMbg8wPS4MFIo3yvovgmGmYEeVWHdfTdjZI6wLs5Qwej7kTCLxPA/exec";
+
+const MAX_ITEMS = 3;
+const MAX_TOTAL = 44000;
+
+const itemsContainer = document.getElementById("items");
+const addButton = document.getElementById("addButton");
+const totalPriceEl = document.getElementById("totalPrice");
+const messageEl = document.getElementById("message");
+const submitButton = document.getElementById("submitButton");
+
+function addItem() {
+
+  if (itemsContainer.children.length >= MAX_ITEMS) {
+    return;
+  }
+
+  const item = document.createElement("div");
+  item.className = "item";
+
+  item.innerHTML = `
+    <div class="item-head">
+      <span class="item-title"></span>
+      <button type="button" class="remove-btn">삭제</button>
+    </div>
+
+    <div class="field">
+      <label>도서명, 교구 이름(정확하게 입력)</label>
+      <input class="book-title" required
+             placeholder="도서 또는 교구 이름">
+    </div>
+
+    <div class="field">
+      <label>YES24 도서 / 아이스크림몰 교구 링크</label>
+      <input class="book-url" type="url" required
+             placeholder="https://">
+    </div>
+
+    <div class="field">
+      <label>가격 (할인 적용 후)</label>
+      <input class="book-price" type="number"
+             min="1" step="1" required
+             placeholder="예: 18000">
+    </div>
+  `;
+
+  item.querySelector(".remove-btn").onclick = () => {
+    item.remove();
+    updateItems();
+  };
+
+  item.querySelector(".book-price")
+      .addEventListener("input", updateTotal);
+
+  itemsContainer.appendChild(item);
+  updateItems();
+}
+
+function updateItems() {
+
+  const items = [...itemsContainer.children];
+
+  items.forEach((item, index) => {
+
+    item.querySelector(".item-title").textContent =
+      "📚 희망 도서 " + (index + 1) +
+      " / 학습교구 " + (index + 1);
+
+    item.querySelector(".remove-btn").hidden =
+      items.length === 1;
+  });
+
+  addButton.hidden = items.length >= MAX_ITEMS;
+
+  updateTotal();
+}
+
+function updateTotal() {
+
+  let total = 0;
+
+  document.querySelectorAll(".book-price")
+    .forEach(input => {
+      total += Number(input.value) || 0;
+    });
+
+  totalPriceEl.textContent =
+    total.toLocaleString("ko-KR") + "원";
+
+  totalPriceEl.style.color =
+    total > MAX_TOTAL ? "#e13b3b" : "#245ed0";
+
+  return total;
+}
+
+function showMessage(text, type) {
+  messageEl.textContent = text;
+  messageEl.className = "message show " + type;
+}
+
+addButton.addEventListener("click", addItem);
+
+addItem();
+
+document.getElementById("applicationForm")
+  .addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const form = event.currentTarget;
+
+    if (!form.reportValidity()) {
+      return;
+    }
+
+    const total = updateTotal();
+
+    if (total > MAX_TOTAL) {
+      showMessage(
+        "신청 총금액은 44,000원을 초과할 수 없습니다.",
+        "error"
+      );
+      return;
+    }
+
+    const items = [...itemsContainer.children];
+
+    const payload = {
+      name: form.elements.name.value.trim(),
+      phone: form.elements.phone.value.trim(),
+      region: form.elements.region.value.trim(),
+      school: form.elements.school.value.trim(),
+      address: form.elements.address.value.trim(),
+      reason: form.elements.reason.value.trim()
+    };
+
+    items.forEach((item, index) => {
+
+      const suffix = index === 0 ? "" : String(index + 1);
+
+      payload["bookTitle" + suffix] =
+        item.querySelector(".book-title").value.trim();
+
+      payload["bookUrl" + suffix] =
+        item.querySelector(".book-url").value.trim();
+
+      payload["price" + suffix] =
+        item.querySelector(".book-price").value.trim();
+
+    });
+
+    submitButton.disabled = true;
+    submitButton.textContent = "전송 중...";
+
+    showMessage("신청서를 전송하고 있습니다.", "info");
+
+    try {
+
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      showMessage(
+        "전송 요청을 보냈습니다. " +
+        "실제 저장 여부는 구글 스프레드시트에서 확인해 주세요.",
+        "info"
+      );
+
+    } catch (error) {
+
+      showMessage(
+        "전송 중 오류가 발생했습니다. " +
+        "인터넷 연결과 Apps Script 배포 설정을 확인해 주세요.",
+        "error"
+      );
+
+    } finally {
+
+      submitButton.disabled = false;
+      submitButton.textContent = "신청서 제출하기";
+
+    }
+
+  });
+
+</script>
+
 </body>
 </html>
-
